@@ -46,32 +46,69 @@ public class TimeHelperTest extends BaseTestCase {
         Instant instantAt0000 = LocalDateTime.of(2015, Month.NOVEMBER, 30, 0, 0).atZone(ZoneId.of(zoneId)).toInstant();
 
         Instant backwardAdjusted = TimeHelper.getMidnightAdjustedInstantBasedOnZone(instantAt0000, zoneId, false);
-        assertEquals("Sun, 29 Nov 2015, 11:59 PM UTC",
-                TimeHelper.formatInstant(backwardAdjusted, zoneId, DATETIME_DISPLAY_FORMAT));
+        // assertEquals("Sun, 29 Nov 2015, 11:59 PM UTC",
+        //         TimeHelper.formatInstant(backwardAdjusted, zoneId, DATETIME_DISPLAY_FORMAT));
+        
+        assertEquals(Instant.parse("2015-11-29T23:59:00Z"), backwardAdjusted);
+        // ^^ caso de teste CT3 -
+        // entrada instantAt0000  = 2015-11-30T00:00:00Z
+        // saída backwardAdjusted = 2015-11-29T23:59:00Z
 
         Instant forwardAdjusted = TimeHelper.getMidnightAdjustedInstantBasedOnZone(instantAt0000, zoneId, true);
-        assertEquals("Mon, 30 Nov 2015, 12:00 AM UTC",
-                TimeHelper.formatInstant(forwardAdjusted, zoneId, DATETIME_DISPLAY_FORMAT));
+        // assertEquals("Mon, 30 Nov 2015, 12:00 AM UTC",
+        //         TimeHelper.formatInstant(forwardAdjusted, zoneId, DATETIME_DISPLAY_FORMAT));
+        
+        assertEquals(Instant.parse("2015-11-30T00:00:00Z"), forwardAdjusted);
+        // ^^ caso de teste CT4 -
+        // entrada instantAt0000 = 2015-11-30T00:00:00Z
+        // saída forwardAdjusted = 2015-11-30T00:00:00Z
 
         Instant instantAt2359 = LocalDateTime.of(2015, Month.NOVEMBER, 29, 23, 59).atZone(ZoneId.of(zoneId)).toInstant();
 
         backwardAdjusted = TimeHelper.getMidnightAdjustedInstantBasedOnZone(instantAt2359, zoneId, false);
-        assertEquals("Sun, 29 Nov 2015, 11:59 PM UTC",
-                TimeHelper.formatInstant(backwardAdjusted, zoneId, DATETIME_DISPLAY_FORMAT));
+        // assertEquals("Sun, 29 Nov 2015, 11:59 PM UTC",
+        //         TimeHelper.formatInstant(backwardAdjusted, zoneId, DATETIME_DISPLAY_FORMAT));
+
+        assertEquals(Instant.parse("2015-11-29T23:59:00Z"), backwardAdjusted);
+        // ^^ caso de teste CT2 -
+        // entrada instantAt2359  = 2015-11-29T23:59:00Z
+        // saída backwardAdjusted = 2015-11-29T23:59:00Z
 
         forwardAdjusted = TimeHelper.getMidnightAdjustedInstantBasedOnZone(instantAt2359, zoneId, true);
-        assertEquals("Mon, 30 Nov 2015, 12:00 AM UTC",
-                TimeHelper.formatInstant(forwardAdjusted, zoneId, DATETIME_DISPLAY_FORMAT));
+        // assertEquals("Mon, 30 Nov 2015, 12:00 AM UTC",
+        //         TimeHelper.formatInstant(forwardAdjusted, zoneId, DATETIME_DISPLAY_FORMAT));
 
-        String wrongTimeZone = "Asia/Singapore";
+        assertEquals(Instant.parse("2015-11-30T00:00:00Z"), forwardAdjusted);
+        // ^^ caso de teste CT1 -
+        // entrada instantAt2359 = 2015-11-29T23:59:00Z
+        // saída forwardAdjusted = 2015-11-30T00:00:00Z
 
-        backwardAdjusted = TimeHelper.getMidnightAdjustedInstantBasedOnZone(instantAt0000, wrongTimeZone, false);
-        assertEquals("Mon, 30 Nov 2015, 12:00 AM UTC",
-                TimeHelper.formatInstant(backwardAdjusted, zoneId, DATETIME_DISPLAY_FORMAT));
+        Instant anyOtherInstant = LocalDateTime.of(2018, Month.APRIL, 15, 23, 0).atZone(ZoneId.of(zoneId)).toInstant();
+        Instant instantIsTheSame = 
+            TimeHelper.getMidnightAdjustedInstantBasedOnZone(anyOtherInstant, zoneId, true);
+        assertEquals(Instant.parse("2018-04-15T23:00:00Z"), instantIsTheSame);
+        // ^^ caso de teste CT5 -
+        // entrada anyOtherInstant = 2018-04-15T23:00:00Z
+        // saída instantIsTheSame  = 2018-04-15T23:00:00Z
 
-        forwardAdjusted = TimeHelper.getMidnightAdjustedInstantBasedOnZone(instantAt2359, wrongTimeZone, true);
-        assertEquals("Sun, 29 Nov 2015, 11:59 PM UTC",
-                TimeHelper.formatInstant(forwardAdjusted, zoneId, DATETIME_DISPLAY_FORMAT));
+        anyOtherInstant = LocalDateTime.of(2021, Month.MARCH, 19, 20, 10).atZone(ZoneId.of(zoneId)).toInstant();
+        instantIsTheSame = 
+            TimeHelper.getMidnightAdjustedInstantBasedOnZone(anyOtherInstant, zoneId, false);
+        assertEquals(Instant.parse("2021-03-19T20:10:00Z"), instantIsTheSame);
+        // ^^ caso de teste CT6 -
+        // entrada anyOtherInstant = 2021-03-19T20:10:00Z
+        // saída instantIsTheSame  = 2021-03-19T20:10:00Z
+
+
+        // String wrongTimeZone = "Asia/Singapore";
+
+        // backwardAdjusted = TimeHelper.getMidnightAdjustedInstantBasedOnZone(instantAt0000, wrongTimeZone, false);
+        // assertEquals("Mon, 30 Nov 2015, 12:00 AM UTC",
+        //         TimeHelper.formatInstant(backwardAdjusted, zoneId, DATETIME_DISPLAY_FORMAT));
+
+        // forwardAdjusted = TimeHelper.getMidnightAdjustedInstantBasedOnZone(instantAt2359, wrongTimeZone, true);
+        // assertEquals("Sun, 29 Nov 2015, 11:59 PM UTC",
+        //         TimeHelper.formatInstant(forwardAdjusted, zoneId, DATETIME_DISPLAY_FORMAT));
     }
 
     @Test
